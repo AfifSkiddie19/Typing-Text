@@ -1,0 +1,195 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct data{
+    char Data;
+    struct data *next;
+    struct data *prev;
+}data;
+
+data *head=NULL, *tail=NULL, *prnt=NULL, *active=NULL;
+
+void add()
+{
+
+    prnt=(data*)malloc(sizeof(data));
+    if(head!=NULL)
+    {
+        if(active!=tail)
+        {
+            prnt->next=active->next;
+            prnt->prev=active;
+            active->next->prev=prnt;
+            active->next=prnt;
+            active=active->next;
+        }
+        else
+        {
+            active->next=prnt;
+            prnt->prev=active;
+            prnt->next=NULL;
+            active=active->next;
+            tail=active;
+        }
+    }
+    else
+    {
+        head=prnt;
+        head->next=NULL;
+        head->prev=NULL;
+        tail=prnt;
+        active=prnt;
+    }
+
+    printf("Masukan Data : ");
+    scanf("%s",&active->Data);
+}
+
+void print()
+{
+    prnt=NULL;
+    if(head!=NULL)
+    {
+        prnt=head;
+        if(active==head && active==tail)
+            printf("\nData is %c",prnt->Data);
+        else
+        {
+            while(prnt!=NULL)
+            {
+                printf("\nData is %c",prnt->Data);
+                prnt=prnt->next;
+            }
+        }
+    }
+    printf("\n");
+}
+
+void del()
+{
+    if(head==tail)
+    {
+        free(head);
+        head=NULL;
+        tail=NULL;
+        active=NULL;
+    }
+    else if(active==tail)
+    {
+        active=active->prev;
+        active->next=NULL;
+        free(tail);
+        tail=active;
+    }
+    else if(active==head)
+    {
+        active=active->next;
+        active->prev=NULL;
+        free(head);
+        head=active;
+    }
+    else
+    {
+        prnt=active->next;
+        active=active->prev;
+        prnt->next=active;
+        free(active->prev);
+        prnt->prev=active;
+    }
+}
+
+void shiftr()
+{
+    if(active->next!=NULL)
+        active=active->next;
+}
+
+void shiftl()
+{
+    if(active->prev!=NULL)
+        active=active->prev;
+}
+
+int main()
+{
+    int pil,i,n,x,max;
+
+    x:
+    printf("Masukan Max Inputan : ");
+    scanf("%d",&max);
+    for(i=1; i<=max+1; i)
+    {
+        system("cls");
+    printf("1. Add Data\n");
+    printf("2. Delete Data\n");
+    printf("3. Shift Right \n");
+    printf("4. Shift Left\n");
+    printf("5. Print Data\n");
+    printf("6. Exit\n");
+    printf("Pilih Pilihan Anda : ");
+    scanf("%d",&pil);
+    switch(pil)
+    {
+    case 1:
+        if(i <= max)
+        {
+            printf("Add Data\n");
+            add();
+            printf("Data Berhasil Ditambahkan");
+            i++;
+        }
+        else
+            printf("Stack penuh");
+        getch();
+        break;
+    case 2:
+        if(i > 0 )
+        {
+            printf("Delete Data\n");
+            del();
+            printf("Data Berhasil Dihapus");
+            i--;
+        }
+        else
+            printf("Stack Kosong");
+        getch();
+        break;
+    case 3:
+        if(i > 0)
+        {
+            printf("Shift Right\n");
+            shiftr();
+        }
+        else
+            printf("Stack Kosong");
+        getch();
+        break;
+    case 4:
+        if(i>0)
+        {
+            printf("Shift Left\n");
+            shiftl();
+        }
+        else
+            printf("Stack Kosong");
+        getch();
+        break;
+    case 5:
+        if(i > 0)
+        {
+            printf("Print Data");
+            print();
+        }
+        else
+            printf("Stack Kosong");
+        getch();
+        break;
+    case 6:
+        printf("Thanks..");
+        exit(0);
+        break;
+    default:
+        printf("Pilihan Hanya Sampai 6");
+    }
+    }
+}
